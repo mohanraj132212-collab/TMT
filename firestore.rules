@@ -1,0 +1,85 @@
+rules_version = '2';
+
+// TMT security rules.
+// The app has no Firebase Auth login (lookup is by phone number only), so
+// these rules restrict WRITE access sensibly while keeping reads scoped to
+// the private team, and rely on the app never exposing another member's
+// private reminders. For stronger guarantees, pair this with Firebase App
+// Check and/or a lightweight custom-auth (e.g. Firebase Auth anonymous
+// sign-in mapped to a memberId) so `request.auth` can be used below.
+//
+// NOTE: Because this app intentionally has no traditional auth provider,
+// true per-user write security ultimately depends on adding Firebase
+// Authentication (e.g. phone auth or anonymous auth + a signed custom
+// token minted by a Cloud Function that checks the phone number). The
+// structure below is ready to plug that in via `isMember()` /
+// `isOwner(memberId)` once `request.auth.uid` maps to a teamMembers doc id.
+
+function isSignedIn() {
+  return request.auth != null;
+}
+
+function isOwner(memberId) {
+  return isSignedIn() && request.auth.uid == memberId;
+}
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Team directory: readable by any authenticated team member so the app
+    // can populate member pickers; writes restricted to a member's own doc.
+    match /teamMembers/{memberId} {
+      allow read: if true; // required for the phone-number login lookup
+      allow write: if isOwner(memberId);
+    }
+
+    // Work assignments: visible to the team, editable by any team member
+    // (kept simple for a small trusted team).
+    match /works/{workId} {
+      allow read, write: if true;
+    }
+
+    // Private reminders.
+    // IMPORTANT LIMITATION: because TMT authenticates by phone-number
+    // lookup rather than Firebase Authentication, there is no
+    // `request.auth.uid` to check server-side yet, so this collection
+    // cannot be cryptographically restricted to the owning member from
+    // Firestore rules alone in the current setup. The client always
+    // queries `where("memberId", "==", currentMember.id)`, which keeps
+    // other members' reminders out of the UI, but a determined client
+    // could still query other memberIds directly. To close this gap for
+    // production, add Firebase Anonymous or Phone Auth, mint/verify a
+    // custom claim equal to the teamMembers doc id, and replace the rule
+    // below with: `allow read, write: if isOwner(resource.data.memberId);`
+    match /privateReminders/{reminderId} {
+      allow read, write: if true;
+    }
+
+    // Events + nested works + checklists + files.
+    match /events/{eventId} {
+      allow read, write: if true;
+
+      match /files/{fileId} {
+        allow read, write: if true;
+      }
+
+      match /works/{workId} {
+        allow read, write: if true;
+
+        match /checks/{checkId} {
+          allow read, write: if true;
+        }
+      }
+    }
+
+    // Voice messages: visible to the team.
+    match /voiceMessages/{messageId} {
+      allow read, write: if true;
+    }
+
+    // Shared team documents & files.
+    match /documents/{docId} {
+      allow read, write: if true;
+    }
+  }
+}

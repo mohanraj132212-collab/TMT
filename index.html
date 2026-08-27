@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>TMT — Team Management</title>
+<meta name="description" content="TMT — private team management and event coordination.">
+<meta name="theme-color" content="#FF4F9A">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="assets/images/logo.png">
+<link rel="apple-touch-icon" href="assets/images/logo.png">
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/components.css">
+<link rel="stylesheet" href="css/responsive.css">
+</head>
+<body>
+
+<!-- ============ SPLASH ============ -->
+<div id="screen-splash" class="splash">
+  <img src="assets/images/logo.png" alt="TMT" class="splash__logo">
+  <div class="spinner spinner--pink"></div>
+</div>
+
+<!-- ============ LOGIN ============ -->
+<section id="screen-login" class="screen login hidden">
+  <div class="login__card">
+    <img src="assets/images/logo.png" alt="TMT" class="login__logo">
+    <h1 class="login__title">Welcome to TMT</h1>
+    <p class="login__subtitle">Enter your registered mobile number</p>
+    <form id="login-form" class="login__form">
+      <label class="field">
+        <span class="field__label">Mobile Number</span>
+        <input type="tel" id="login-phone" class="field__input" placeholder="+91 XXXXX XXXXX" autocomplete="tel" required>
+      </label>
+      <button type="submit" class="btn btn--primary btn--full" id="login-submit">Continue</button>
+      <p class="login__error" id="login-error" role="alert"></p>
+    </form>
+  </div>
+</section>
+
+<!-- ============ APP SHELL ============ -->
+<div id="screen-app" class="app hidden">
+
+  <!-- Desktop sidebar -->
+  <aside class="sidebar">
+    <div class="sidebar__brand">
+      <img src="assets/images/logo.png" alt="TMT" class="sidebar__logo">
+      <span class="sidebar__name">TMT</span>
+    </div>
+    <nav class="sidebar__nav" id="sidebar-nav"></nav>
+    <button class="sidebar__profile" id="sidebar-profile-btn">
+      <span class="avatar avatar--sm" id="sidebar-avatar"></span>
+      <span class="sidebar__profile-name" id="sidebar-profile-name">Profile</span>
+    </button>
+  </aside>
+
+  <!-- Main column -->
+  <div class="app__main">
+    <header class="topbar">
+      <img src="assets/images/logo.png" alt="TMT" class="topbar__logo">
+      <span class="topbar__title" id="topbar-title">Home</span>
+      <button class="icon-btn topbar__profile" id="topbar-profile-btn" aria-label="Profile"></button>
+    </header>
+
+    <main class="view" id="view-root" role="main"></main>
+
+    <!-- Floating record button -->
+    <div class="record-fab-wrap" id="record-fab-wrap">
+      <button class="record-fab" id="record-fab" aria-label="Hold to record a voice note">
+        <span class="record-fab__icon" id="record-fab-icon"></span>
+      </button>
+      <div class="record-hint" id="record-hint">Hold to record</div>
+    </div>
+
+    <!-- Bottom nav (mobile) -->
+    <nav class="bottom-nav" id="bottom-nav"></nav>
+  </div>
+</div>
+
+<!-- ============ VOICE PREVIEW BAR ============ -->
+<div id="voice-preview" class="voice-preview hidden">
+  <button class="icon-btn" id="voice-preview-delete" aria-label="Delete recording"></button>
+  <button class="icon-btn icon-btn--pink" id="voice-preview-play" aria-label="Play recording"></button>
+  <div class="voice-preview__wave">
+    <span class="voice-preview__timer" id="voice-preview-timer">0:00</span>
+  </div>
+  <button class="icon-btn icon-btn--send" id="voice-preview-send" aria-label="Send recording"></button>
+</div>
+
+<!-- ============ GENERIC MODAL ============ -->
+<div id="modal-backdrop" class="modal-backdrop hidden">
+  <div class="modal" id="modal" role="dialog" aria-modal="true">
+    <div class="modal__header">
+      <h2 class="modal__title" id="modal-title"></h2>
+      <button class="icon-btn" id="modal-close" aria-label="Close"></button>
+    </div>
+    <div class="modal__body" id="modal-body"></div>
+  </div>
+</div>
+
+<audio id="global-audio" preload="none"></audio>
+
+<div id="tmt-toast" class="toast"></div>
+
+<script type="module" src="js/app.js"></script>
+<script>
+  if ("serviceWorker" in navigator) {
+    window.addEventListener("load", () => {
+      navigator.serviceWorker.register("service-worker.js").catch((err) => {
+        console.warn("Service worker registration failed:", err);
+      });
+    });
+  }
+</script>
+</body>
+</html>
+

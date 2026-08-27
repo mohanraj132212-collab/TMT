@@ -1,0 +1,81 @@
+/* ==========================================================================
+   TMT — Responsive layout rules
+   Mobile-first base lives in style.css / components.css.
+   Breakpoints here progressively unlock tablet and desktop layouts.
+   ========================================================================== */
+
+/* ---------- Tablet: 768px – 1024px ---------- */
+@media (min-width: 768px) {
+  .view { padding: 22px 28px 140px; }
+
+  .summary-grid { grid-template-columns: 1fr 1fr; }
+
+  .modal-backdrop { align-items: center; }
+  .modal { border-radius: 24px; max-height: 84vh; }
+
+  .login__card { max-width: 420px; }
+
+  .list--grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+}
+
+/* ---------- Desktop: > 1024px ---------- */
+@media (min-width: 1025px) {
+  body { background: var(--bg-soft); }
+
+  .sidebar { display: flex; }
+
+  .topbar { display: none; }
+
+  .bottom-nav { display: none; }
+
+  .app__main { padding: 0; }
+
+  .view {
+    padding: 32px 40px 60px;
+  }
+
+  .record-fab-wrap {
+    bottom: 34px;
+    right: 40px;
+  }
+
+  .voice-preview {
+    left: auto; right: 40px; width: 420px; bottom: 34px;
+  }
+
+  .fab-add { bottom: 110px; right: 40px; }
+
+  .summary-grid { grid-template-columns: 1fr 1fr; }
+
+  .page-header { margin-bottom: 22px; }
+
+  .list--grid { grid-template-columns: repeat(3, 1fr); }
+
+  /* Give the dashboard a two-column "efficient workspace" feel */
+  .desktop-columns {
+    display: grid;
+    grid-template-columns: 1.15fr 0.85fr;
+    gap: 20px;
+    align-items: start;
+  }
+}
+
+@media (min-width: 1400px) {
+  .view { max-width: 1280px; }
+  .list--grid { grid-template-columns: repeat(4, 1fr); }
+}
+
+/* ---------- Small phones ---------- */
+@media (max-width: 360px) {
+  .voice-note__label { display: none; }
+  .record-fab { width: 56px; height: 56px; }
+}
+
+/* ---------- Reduced motion ---------- */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}

@@ -1,0 +1,22 @@
+rules_version = '2';
+
+// See the note in firestore.rules about this app's auth model — the same
+// limitation (no Firebase Auth session tied to a memberId yet) applies
+// here. Tighten these once Firebase Authentication is added.
+
+service firebase.storage {
+  match /b/{bucket}/o {
+
+    match /profilePhotos/{memberId}/{fileName} {
+      allow read: if true;
+      allow write: if request.resource.size < 5 * 1024 * 1024
+                   && request.resource.contentType.matches('image/.*');
+    }
+
+    match /voiceMessages/{folder}/{fileName} {
+      allow read: if true;
+      allow write: if request.resource.size < 20 * 1024 * 1024
+                   && request.resource.contentType.matches('audio/.*');
+    }
+  }
+}
