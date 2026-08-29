@@ -1,9 +1,41 @@
 // service-worker.js
-// Caches the static app shell so TMT can boot offline. Firebase network
-// requests (Firestore/Storage) always go to the network — this worker never
-// caches API responses, only the app's own static assets.
+// Caches static app shell for offline boot and handles FCM background push notifications.
 
-const CACHE_NAME = "tmt-shell-v1";
+importScripts("https://www.gstatic.com/firebasejs/12.18.0/firebase-app-compat.js");
+importScripts("https://www.gstatic.com/firebasejs/12.18.0/firebase-messaging-compat.js");
+
+if (typeof firebase !== "undefined" && firebase.apps.length === 0) {
+  firebase.initializeApp({
+    apiKey: "AIzaSyBOmsA0zbKekxhKRrHciaEG8AFpcqESIgE",
+    authDomain: "private-team-management.firebaseapp.com",
+    projectId: "private-team-management",
+    storageBucket: "private-team-management.firebasestorage.app",
+    messagingSenderId: "756488795937",
+    appId: "1:756488795937:web:b1548123ce450e5b59f060",
+    measurementId: "G-BQZLXJ9Z8J",
+  });
+
+  const fcmMessaging = firebase.messaging();
+  fcmMessaging.onBackgroundMessage((payload) => {
+    console.log("[service-worker.js] FCM background payload:", payload);
+    const title = payload.notification?.title || payload.data?.title || "TMT Message";
+    const body = payload.notification?.body || payload.data?.body || "New notification";
+    const icon = payload.notification?.icon || payload.data?.icon || "./assets/images/logo.png";
+    const targetUrl = payload.data?.url || payload.notification?.url || "./index.html#/home";
+
+    self.registration.showNotification(title, {
+      body,
+      icon,
+      badge: "./assets/images/logo.png",
+      data: { url: targetUrl },
+      vibrate: [200, 100, 200],
+      tag: "tmt-fcm-notification",
+      renotify: true,
+    });
+  });
+}
+
+const CACHE_NAME = "tmt-shell-v2";
 
 const APP_SHELL = [
   "./",
