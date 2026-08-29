@@ -19,9 +19,10 @@ import {
   orderBy,
   onSnapshot,
   serverTimestamp,
+  arrayUnion,
+  arrayRemove,
   enableIndexedDbPersistence,
 } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-firestore.js";
-
 
 import {
   getMessaging,
@@ -78,6 +79,8 @@ export {
   orderBy,
   onSnapshot,
   serverTimestamp,
+  arrayUnion,
+  arrayRemove,
 };
 
 

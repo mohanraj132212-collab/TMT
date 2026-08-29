@@ -45,7 +45,15 @@ import { VoiceRecorder, sendVoiceNote, updateVoiceNote, deleteVoiceNote, getWork
 import { updateProfileName, updateProfilePhone, updateProfilePhoto, getStoredTheme, setStoredTheme } from "./profile.js";
 import { getAllDocuments, listenToDocuments, uploadDocument, deleteDocument } from "./documents.js";
 import { openImageCropperModal } from "./cropper.js";
-import { setupNotifications, notifyNewMessage, getNotificationPermissionState } from "./notifications.js";
+import {
+  setupNotifications,
+  notifyNewMessage,
+  getNotificationPermissionState,
+  getUserNotificationPreference,
+  setUserNotificationPreference,
+  registerFCMToken,
+  unregisterFCMToken,
+} from "./notifications.js";
 import { renderReactionPillsHtml, renderEmojiPickerHtml, wireReactionsUI } from "./reactions.js";
 import { db, collection, addDoc, serverTimestamp } from "./firebase.js";
 
@@ -1393,6 +1401,9 @@ async function renderEventThread(eventId, workId, memberMap) {
 async function renderSettingsPage() {
   const member = getCurrentMember();
   const theme = getStoredTheme();
+  const isEnabled = await getUserNotificationPreference(member.id);
+  const permState = getNotificationPermissionState();
+
   el.view.innerHTML = `
     <h1 class="page-title">Settings</h1>
     <div class="settings-profile mt-16">
@@ -1424,8 +1435,17 @@ async function renderSettingsPage() {
     <div class="settings-section">
       <h2 class="section-title mt-8">Notifications</h2>
       <div class="settings-row">
-        <span class="settings-row__label">Push Notifications</span>
-        <button class="btn btn--ghost btn--sm" id="enable-notifications-btn">${icon("bell", "icon--sm")} ${getNotificationPermissionState() === "granted" ? "Enabled" : "Enable"}</button>
+        <div style="display:flex;align-items:center;gap:10px;">
+          ${icon("bell", "icon--sm")}
+          <span class="settings-row__label">Push Notifications</span>
+        </div>
+        <label class="toggle-switch">
+          <input type="checkbox" id="push-notification-toggle" ${isEnabled && permState === "granted" ? "checked" : ""}>
+          <span class="toggle-slider"></span>
+        </label>
+      </div>
+      <div id="notification-warning" class="meta-text mt-8 ${permState === "denied" ? "" : "hidden"}" style="color:var(--danger);">
+        Notifications are blocked at your browser/device level. Please allow notifications in Android / browser settings to enable push alerts.
       </div>
     </div>
 
@@ -1440,11 +1460,43 @@ async function renderSettingsPage() {
     <button class="btn btn--danger btn--full" id="logout-btn">${icon("logout", "icon--sm")}Log Out</button>
   `;
 
-  $("#enable-notifications-btn").addEventListener("click", async () => {
-    const ok = await setupNotifications(member.id);
-    if (ok) showToast("Notifications enabled!");
-    else showToast("Notification permission not granted.", "error");
-    renderSettingsPage();
+  const pushToggle = $("#push-notification-toggle");
+  const warnEl = $("#notification-warning");
+
+  pushToggle.addEventListener("change", async () => {
+    const perm = getNotificationPermissionState();
+
+    if (pushToggle.checked) {
+      if (perm === "denied") {
+        pushToggle.checked = false;
+        warnEl.classList.remove("hidden");
+        showToast("Notifications blocked in device settings. Allow notifications in Android settings.", "error");
+        return;
+      }
+      if (perm === "default") {
+        try {
+          const req = await Notification.requestPermission();
+          if (req !== "granted") {
+            pushToggle.checked = false;
+            warnEl.classList.remove("hidden");
+            showToast("Notification permission was denied.", "error");
+            await setUserNotificationPreference(member.id, false);
+            return;
+          }
+        } catch (e) {
+          pushToggle.checked = false;
+          return;
+        }
+      }
+      warnEl.classList.add("hidden");
+      await setUserNotificationPreference(member.id, true);
+      await registerFCMToken(member.id);
+      showToast("Push notifications turned ON");
+    } else {
+      await setUserNotificationPreference(member.id, false);
+      await unregisterFCMToken(member.id);
+      showToast("Push notifications turned OFF");
+    }
   });
 
 
