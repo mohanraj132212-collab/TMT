@@ -56,6 +56,8 @@ export async function setUserNotificationPreference(memberId, enabled) {
   }
 }
 
+export const VAPID_PUBLIC_KEY = "BNRLqOJOnSj-0XNTFQppNcjKBjj4o-IAUwGhUPqwzFuBikFSrdyHkFl68XUYJdxgRrTpfE2ciBsrhCSyrPH8l4A";
+
 /** Register FCM token for the current device and add to user's fcmTokens array in Firestore. */
 export async function registerFCMToken(memberId) {
   if (!memberId || !isPushSupported()) return null;
@@ -65,7 +67,10 @@ export async function registerFCMToken(memberId) {
     const supported = await isMessagingSupported();
 
     if (supported && messaging) {
-      const token = await getToken(messaging, { serviceWorkerRegistration: swReg });
+      const token = await getToken(messaging, {
+        vapidKey: VAPID_PUBLIC_KEY,
+        serviceWorkerRegistration: swReg,
+      });
       if (token) {
         await updateDoc(doc(db, "teamMembers", memberId), {
           fcmTokens: arrayUnion(token),
