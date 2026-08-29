@@ -88,13 +88,69 @@ export class VoiceRecorder {
   }
 }
 
+/** Helper to calculate expiration date timestamp. */
+export function calculateExpirationDate(expirationType) {
+  if (!expirationType || expirationType === "never") return null;
+  const now = Date.now();
+  const msMap = {
+    "1h": 1 * 60 * 60 * 1000,
+    "6h": 6 * 60 * 60 * 1000,
+    "12h": 12 * 60 * 60 * 1000,
+    "24h": 24 * 60 * 60 * 1000,
+    "3d": 3 * 24 * 60 * 60 * 1000,
+    "7d": 7 * 24 * 60 * 60 * 1000,
+  };
+  const offset = msMap[expirationType];
+  return offset ? new Date(now + offset) : null;
+}
+
+/** Check if a voice message is expired. */
+export function isVoiceNoteExpired(msg) {
+  if (!msg || !msg.expiresAt) return false;
+  let expiresMs = 0;
+  if (msg.expiresAt.seconds) {
+    expiresMs = msg.expiresAt.seconds * 1000;
+  } else if (msg.expiresAt.toDate) {
+    expiresMs = msg.expiresAt.toDate().getTime();
+  } else {
+    expiresMs = new Date(msg.expiresAt).getTime();
+  }
+  return expiresMs <= Date.now();
+}
+
+/** Purge expired voice notes from Firestore and delete Cloudinary assets. */
+export async function cleanExpiredVoiceNotes(messages = []) {
+  for (const m of messages) {
+    if (isVoiceNoteExpired(m)) {
+      try {
+        await deleteVoiceNote(m.id);
+      } catch (e) {
+        console.warn("Failed to auto-delete expired voice note:", m.id, e);
+      }
+    }
+  }
+}
+
 /** Persist a recorded voice note: upload audio blob directly to Cloudinary and save metadata in Firestore. */
-export async function sendVoiceNote({ blob, mimeType, duration, senderId, senderName = null, eventId = null, workId = null, replyTo = null }) {
+export async function sendVoiceNote({
+  blob,
+  mimeType,
+  duration,
+  senderId,
+  senderName = null,
+  eventId = null,
+  workId = null,
+  replyTo = null,
+  expirationType = "never",
+}) {
   const ext = mimeType?.includes("mp4") ? "m4a" : "webm";
   const fileName = `voice_${senderId}_${Date.now()}.${ext}`;
   const { secureUrl, publicId, bytes } = await uploadToCloudinary(blob, fileName);
 
+  const expDate = calculateExpirationDate(expirationType);
+
   const docRef = await addDoc(collection(db, "voiceMessages"), {
+    type: "voice",
     senderId,
     senderName,
     eventId: eventId || null,
@@ -108,6 +164,9 @@ export async function sendVoiceNote({ blob, mimeType, duration, senderId, sender
     duration: Math.round(duration),
     status: "sent",
     replyTo: replyTo || null,
+    expirationType: expirationType || "never",
+    expiresAt: expDate ? expDate : null,
+    reactions: {},
     createdAt: serverTimestamp(),
     updatedAt: serverTimestamp(),
   });
@@ -169,15 +228,15 @@ export async function deleteVoiceNote(messageId) {
   await deleteDoc(doc(db, "voiceMessages", messageId));
 }
 
-
-
 /** Fetch general (non-event) team voice messages for the Home feed. */
 export async function getTeamVoiceMessages() {
   try {
     const snap = await getDocs(collection(db, "voiceMessages"));
-    return snap.docs
-      .map((d) => ({ id: d.id, ...d.data() }))
-      .filter((m) => !m.eventId)
+    const all = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
+    cleanExpiredVoiceNotes(all);
+
+    return all
+      .filter((m) => !m.eventId && !isVoiceNoteExpired(m))
       .sort((a, b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0));
   } catch (err) {
     console.error("getTeamVoiceMessages error:", err);
@@ -190,9 +249,11 @@ export function listenToTeamVoiceMessages(onChange, onError) {
   return onSnapshot(
     collection(db, "voiceMessages"),
     (snap) => {
-      const msgs = snap.docs
-        .map((d) => ({ id: d.id, ...d.data() }))
-        .filter((m) => !m.eventId)
+      const all = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
+      cleanExpiredVoiceNotes(all);
+
+      const msgs = all
+        .filter((m) => !m.eventId && !isVoiceNoteExpired(m))
         .sort((a, b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0));
       onChange(msgs);
     },
@@ -207,9 +268,11 @@ export function listenToTeamVoiceMessages(onChange, onError) {
 export async function getWorkVoiceMessages(eventId, workId) {
   try {
     const snap = await getDocs(collection(db, "voiceMessages"));
-    return snap.docs
-      .map((d) => ({ id: d.id, ...d.data() }))
-      .filter((m) => m.eventId === eventId && (workId ? m.workId === workId : true))
+    const all = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
+    cleanExpiredVoiceNotes(all);
+
+    return all
+      .filter((m) => m.eventId === eventId && (workId ? m.workId === workId : true) && !isVoiceNoteExpired(m))
       .sort((a, b) => (a.createdAt?.seconds || 0) - (b.createdAt?.seconds || 0));
   } catch (err) {
     console.error("getWorkVoiceMessages error:", err);
@@ -222,10 +285,12 @@ export function listenToWorkVoiceMessages(eventId, workId, onChange, onError) {
   return onSnapshot(
     collection(db, "voiceMessages"),
     (snap) => {
-      const msgs = snap.docs
-        .map((d) => ({ id: d.id, ...d.data() }))
-        .filter((m) => m.eventId === eventId && (workId ? m.workId === workId : true))
-        .sort((a, b) => (a.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0));
+      const all = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
+      cleanExpiredVoiceNotes(all);
+
+      const msgs = all
+        .filter((m) => m.eventId === eventId && (workId ? m.workId === workId : true) && !isVoiceNoteExpired(m))
+        .sort((a, b) => (a.createdAt?.seconds || 0) - (b.createdAt?.seconds || 0));
       onChange(msgs);
     },
     (err) => {
@@ -244,8 +309,6 @@ export function groupVoiceMessagesBySender(messages) {
   }
   const result = [];
   for (const [senderId, msgs] of groups.entries()) {
-    // Messages come in desc order (newest first); keep that within group
-    // but present playback oldest->newest for a natural conversation feel.
     const ordered = [...msgs].sort((a, b) => (a.createdAt?.seconds || 0) - (b.createdAt?.seconds || 0));
     const latest = Math.max(...msgs.map((m) => m.createdAt?.seconds || 0));
     result.push({ senderId, messages: ordered, latest });
@@ -253,5 +316,6 @@ export function groupVoiceMessagesBySender(messages) {
   result.sort((a, b) => b.latest - a.latest);
   return result;
 }
+
 
 

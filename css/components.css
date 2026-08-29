@@ -545,10 +545,199 @@
   width: 100%;
   justify-content: center;
 }
-.cropper-controls input[type="range"] {
-  flex: 1;
-  accent-color: var(--pink);
+
+/* ---------- Voice Note Expiration Dropdown ---------- */
+.voice-preview__expiration-wrap {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background: var(--bg-soft);
+  padding: 4px 8px;
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--border);
+  margin: 0 4px;
 }
+.voice-preview__exp-label {
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+.voice-preview__exp-select {
+  background: transparent;
+  border: none;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--pink-dark);
+  cursor: pointer;
+  outline: none;
+  padding-right: 4px;
+}
+.voice-preview__exp-select option {
+  background: var(--surface);
+  color: var(--text);
+}
+
+/* ---------- Emoji Reactions & Popover ---------- */
+.msg-wrapper {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 12px;
+  width: 100%;
+}
+.msg-bubble-container {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  width: 100%;
+}
+.text-msg-bubble {
+  background: var(--bg-soft);
+  border-radius: 16px;
+  padding: 10px 14px;
+  font-size: 14px;
+  line-height: 1.45;
+  color: var(--text);
+  word-break: break-word;
+  max-width: 85%;
+  border: 1px solid var(--border);
+}
+.text-msg-bubble.mine {
+  background: var(--pink-tint);
+  border-color: rgba(255, 79, 154, 0.25);
+  margin-left: auto;
+}
+.reaction-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 4px;
+  margin-left: 4px;
+  flex-wrap: wrap;
+}
+.reaction-pills {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-wrap: wrap;
+}
+.reaction-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 2px 7px;
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.15s var(--ease);
+}
+.reaction-pill:hover {
+  background: var(--bg-soft);
+}
+.reaction-pill.is-mine {
+  background: var(--pink-tint);
+  border-color: var(--pink);
+  font-weight: 700;
+}
+.reaction-pill__count {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-muted);
+}
+.reaction-pill.is-mine .reaction-pill__count {
+  color: var(--pink-dark);
+}
+.reaction-add-btn {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 2px 4px;
+  font-size: 14px;
+  opacity: 0.65;
+  transition: opacity 0.15s var(--ease), transform 0.1s var(--ease);
+}
+.reaction-add-btn:hover {
+  opacity: 1;
+  transform: scale(1.15);
+}
+
+.emoji-picker-popover {
+  position: absolute;
+  bottom: 100%;
+  left: 10px;
+  z-index: 100;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 6px;
+  box-shadow: var(--shadow-md);
+  margin-bottom: 6px;
+}
+.msg-wrapper.mine .emoji-picker-popover {
+  left: auto;
+  right: 10px;
+}
+.emoji-picker-grid {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.emoji-option-btn {
+  background: transparent;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+  padding: 6px;
+  border-radius: 8px;
+  transition: background 0.15s var(--ease), transform 0.1s var(--ease);
+}
+.emoji-option-btn:hover {
+  background: var(--bg-soft);
+  transform: scale(1.2);
+}
+
+/* ---------- Text Chat Input Bar ---------- */
+.chat-input-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 24px;
+  padding: 6px 6px 6px 14px;
+  margin-top: 14px;
+  margin-bottom: 14px;
+  box-shadow: var(--shadow-sm);
+}
+.chat-input-field {
+  flex: 1;
+  border: none;
+  background: transparent;
+  font-size: 14px;
+  color: var(--text);
+  outline: none;
+}
+.chat-send-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--pink);
+  color: #fff;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background 0.15s var(--ease);
+}
+.chat-send-btn:hover {
+  background: var(--pink-dark);
+}
+
 
 
 

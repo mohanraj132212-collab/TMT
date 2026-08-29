@@ -8,6 +8,7 @@ import { getAllTeamMembers } from "./team.js";
 import { listenToTeamVoiceMessages, groupVoiceMessagesBySender } from "./voice.js";
 import { getAllEvents } from "./events.js";
 import { getAllWork } from "./work.js";
+import { renderReactionPillsHtml, renderEmojiPickerHtml, wireReactionsUI } from "./reactions.js";
 
 
 function memberChip(member) {
@@ -36,15 +37,22 @@ function renderVoiceGroup(group, memberMap, onPlay, currentMemberId) {
           </div>`
         : "";
 
+      const reactionsHtml = renderReactionPillsHtml(m.reactions, currentMemberId, m.id);
+      const pickerHtml = renderEmojiPickerHtml(m.id);
+
       return `
-      <div style="display:flex;align-items:center;gap:6px;width:100%;">
-        <button class="voice-note" data-audio="${esc(m.audioUrl)}" data-id="${esc(m.id)}" style="flex:1;">
-          <span class="voice-note__play">${icon("play")}</span>
-          <span class="voice-note__label">Voice Note ${i + 1}${isEditedTag}</span>
-          <span class="voice-note__bar"><span class="voice-note__progress"></span></span>
-          <span class="voice-note__duration">${formatDuration(m.duration)}</span>
-        </button>
-        ${actionMenuHtml}
+      <div class="msg-wrapper" style="width:100%;">
+        ${pickerHtml}
+        <div style="display:flex;align-items:center;gap:6px;width:100%;">
+          <button class="voice-note" data-audio="${esc(m.audioUrl)}" data-id="${esc(m.id)}" style="flex:1;">
+            <span class="voice-note__play">${icon("play")}</span>
+            <span class="voice-note__label">Voice Note ${i + 1}${isEditedTag}</span>
+            <span class="voice-note__bar"><span class="voice-note__progress"></span></span>
+            <span class="voice-note__duration">${formatDuration(m.duration)}</span>
+          </button>
+          ${actionMenuHtml}
+        </div>
+        ${reactionsHtml}
       </div>`;
     })
     .join("");
@@ -111,7 +119,10 @@ export async function renderVoiceActivity(container, { onPlay, currentMemberId, 
           onDelete?.(id);
         });
       });
+
+      wireReactionsUI(container, currentMemberId, "voiceMessages");
     };
+
 
     // Real-time listener for voice activity
     return listenToTeamVoiceMessages(

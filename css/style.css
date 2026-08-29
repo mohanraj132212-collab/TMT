@@ -181,7 +181,19 @@ input, textarea, select {
 }
 .topbar__logo { width: 30px; height: 30px; border-radius: 8px; object-fit: cover; }
 .topbar__title { font-weight: 700; font-size: 16.5px; flex: 1; }
-.topbar__profile { background: var(--bg-soft); }
+.topbar__profile {
+  background: var(--bg-soft);
+  overflow: hidden;
+  padding: 0;
+  border-radius: 50%;
+}
+.topbar__avatar {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+  display: block;
+}
 
 /* View container */
 .view {

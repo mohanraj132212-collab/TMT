@@ -1,0 +1,29 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Base application theme. -->
+    <style name="Theme.TMT" parent="Theme.Material3.DayNight.NoActionBar">
+        <!-- Primary brand color. -->
+        <item name="colorPrimary">@color/pink_primary</item>
+        <item name="colorOnPrimary">@color/bg_light</item>
+        <item name="colorPrimaryContainer">@color/pink_light</item>
+        <item name="colorOnPrimaryContainer">@color/pink_dark</item>
+
+        <!-- Secondary brand color. -->
+        <item name="colorSecondary">@color/pink_dark</item>
+        <item name="colorOnSecondary">@color/bg_light</item>
+
+        <!-- Background & Surface -->
+        <item name="android:colorBackground">@color/bg_soft_light</item>
+        <item name="colorSurface">@color/surface_light</item>
+        <item name="colorOnSurface">@color/text_main_light</item>
+        <item name="colorOnSurfaceVariant">@color/text_muted_light</item>
+
+        <!-- Status bar color. -->
+        <item name="android:statusBarColor">@color/surface_light</item>
+        <item name="android:windowLightStatusBar">true</item>
+    </style>
+
+    <!-- Circular Shape Appearance for Avatars -->
+    <style name="CircleImage" parent="">
+        <item name="cornerSize">50%</item>
+    </style>
+</resources>

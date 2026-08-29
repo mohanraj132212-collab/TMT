@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginVertical="6dp"
+    app:cardCornerRadius="16dp"
+    app:cardElevation="1dp"
+    app:strokeColor="@color/border_light"
+    app:strokeWidth="1dp"
+    app:cardBackgroundColor="?attr/colorSurface">
+
+    <ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="12dp">
+
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/ivSenderAvatar"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/ic_profile"
+            app:shapeAppearanceOverlay="@style/CircleImage"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/tvSenderName"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:textColor="?attr/colorOnSurface"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toStartOf="@id/ivOptions"
+            app:layout_constraintStart_toEndOf="@id/ivSenderAvatar"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="Mohanraj" />
+
+        <TextView
+            android:id="@+id/tvTimestamp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="?attr/colorOnSurfaceVariant"
+            android:textSize="11sp"
+            app:layout_constraintStart_toStartOf="@id/tvSenderName"
+            app:layout_constraintTop_toBottomOf="@id/tvSenderName"
+            tools:text="10:45 AM • 15s" />
+
+        <TextView
+            android:id="@+id/tvEditedTag"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="6dp"
+            android:text="(edited)"
+            android:textColor="?attr/colorOnSurfaceVariant"
+            android:textSize="11sp"
+            android:textStyle="italic"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@id/tvTimestamp"
+            app:layout_constraintStart_toEndOf="@id/tvTimestamp"
+            app:layout_constraintTop_toTopOf="@id/tvTimestamp"
+            tools:visibility="visible" />
+
+        <ImageView
+            android:id="@+id/ivOptions"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="Options"
+            android:padding="4dp"
+            android:src="@drawable/ic_edit"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:tint="?attr/colorOnSurfaceVariant" />
+
+        <!-- Audio Control Bar -->
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:background="@color/pink_tint"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:padding="8dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/ivSenderAvatar">
+
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/fabPlayPause"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:contentDescription="Play/Pause"
+                android:src="@drawable/ic_play"
+                app:fabCustomSize="36dp"
+                app:maxImageSize="18dp"
+                app:backgroundTint="@color/pink_primary"
+                app:tint="@color/bg_light" />
+
+            <SeekBar
+                android:id="@+id/sbProgress"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:progressTint="@color/pink_primary"
+                android:thumbTint="@color/pink_primary" />
+
+            <TextView
+                android:id="@+id/tvDuration"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="6dp"
+                android:textColor="@color/pink_dark"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                tools:text="0:15" />
+
+        </LinearLayout>
+
+    </ConstraintLayout>
+</com.google.android.material.card.MaterialCardView>

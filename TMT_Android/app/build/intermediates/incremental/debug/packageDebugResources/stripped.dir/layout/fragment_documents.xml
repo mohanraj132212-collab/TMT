@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp">
+
+    <TextView
+        android:id="@+id/tvDocsHeader"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Team Documents"
+        android:textColor="?attr/colorOnSurface"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnUploadDoc"
+        style="@style/Widget.Material3.Button.Icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/pink_primary"
+        android:text="Upload File"
+        android:textColor="@color/bg_light"
+        app:icon="@drawable/ic_add"
+        app:iconTint="@color/bg_light"
+        app:layout_constraintBottom_toBottomOf="@id/tvDocsHeader"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/tvDocsHeader" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvDocuments"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvDocsHeader"
+        tools:listitem="@layout/item_document" />
+
+    <TextView
+        android:id="@+id/tvEmptyDocs"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="No documents uploaded yet."
+        android:textColor="?attr/colorOnSurfaceVariant"
+        android:textSize="14sp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+</ConstraintLayout>

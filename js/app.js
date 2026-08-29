@@ -45,6 +45,10 @@ import { VoiceRecorder, sendVoiceNote, updateVoiceNote, deleteVoiceNote, getWork
 import { updateProfileName, updateProfilePhone, updateProfilePhoto, getStoredTheme, setStoredTheme } from "./profile.js";
 import { getAllDocuments, listenToDocuments, uploadDocument, deleteDocument } from "./documents.js";
 import { openImageCropperModal } from "./cropper.js";
+import { setupNotifications, notifyNewMessage, getNotificationPermissionState } from "./notifications.js";
+import { renderReactionPillsHtml, renderEmojiPickerHtml, wireReactionsUI } from "./reactions.js";
+import { db, collection, addDoc, serverTimestamp } from "./firebase.js";
+
 
 /* ============================================================
    Elements
@@ -122,6 +126,9 @@ function enterApp(member) {
   el.app.classList.remove("hidden");
   renderNav();
   updateProfileChrome(member);
+  if (member?.id) {
+    setupNotifications(member.id);
+  }
   subscribeTeamMembers((members, cache) => {
     if (member?.id && cache[member.id]) {
       const updated = cache[member.id];
@@ -175,11 +182,28 @@ function setActiveNav(route) {
 }
 
 function updateProfileChrome(member) {
+  if (!member) return;
   const initialLetter = esc(initials(member.name || "?"));
+
+  // Sidebar profile avatar
   el.sidebarAvatar.innerHTML = member.profilePhoto
     ? `<img class="avatar avatar--sm" src="${esc(member.profilePhoto)}" alt="" onerror="this.onerror=null;this.replaceWith(Object.assign(document.createElement('span'),{className:'avatar avatar--sm avatar--initials',textContent:'${initialLetter}'}))">`
     : `<span class="avatar avatar--sm avatar--initials">${initialLetter}</span>`;
   el.sidebarProfileName.textContent = member.name || "Profile";
+
+  // Topbar profile avatar
+  if (member.profilePhoto) {
+    const defaultIconSvg = icon("profile");
+    el.topbarProfileBtn.innerHTML = `<img class="topbar__avatar" src="${esc(member.profilePhoto)}" alt="${esc(member.name || "Profile")}">`;
+    const img = el.topbarProfileBtn.querySelector("img");
+    if (img) {
+      img.onerror = () => {
+        el.topbarProfileBtn.innerHTML = defaultIconSvg;
+      };
+    }
+  } else {
+    el.topbarProfileBtn.innerHTML = icon("profile");
+  }
 }
 
 el.topbarProfileBtn.addEventListener("click", () => (location.hash = "#/settings"));
@@ -1267,41 +1291,91 @@ function openAddCheckModal(eventId, workId, members, ev) {
 async function renderEventThread(eventId, workId, memberMap) {
   const container = $("#event-thread");
   if (!container) return;
-  setLoading(container, "Loading voice notes…");
+  setLoading(container, "Loading thread…");
   try {
     const me = getCurrentMember();
     const renderMsgs = (messages) => {
-      if (messages.length === 0) {
-        setEmpty(container, "No voice messages yet for this " + (workId ? "work" : "event") + ".");
-        return;
-      }
-      container.innerHTML = messages
-        .map((m) => {
-          const sender = memberMap[m.senderId];
-          const mine = m.senderId === me.id;
-          const initialLetter = esc(initials(sender?.name || "?"));
-          return `
-          <div class="thread-msg ${mine ? "mine" : ""}">
-            ${
-              sender && !mine
+      const msgsHtml = messages.length === 0
+        ? `<p class="meta-text mt-8 mb-8" style="text-align:center;">No messages yet for this ${workId ? "work" : "event"}.</p>`
+        : messages
+            .map((m) => {
+              const sender = memberMap[m.senderId];
+              const mine = m.senderId === me?.id;
+              const initialLetter = esc(initials(sender?.name || "?"));
+              const avatarHtml = sender && !mine
                 ? sender.profilePhoto
                   ? `<img class="avatar avatar--sm" src="${esc(sender.profilePhoto)}" onerror="this.onerror=null;this.replaceWith(Object.assign(document.createElement('span'),{className:'avatar avatar--sm avatar--initials',textContent:'${initialLetter}'}))">`
                   : `<span class="avatar avatar--sm avatar--initials">${initialLetter}</span>`
-                : ""
-            }
-            <div class="thread-msg__bubble">
-              ${!mine ? `<div class="thread-msg__name">${esc(sender?.name || "Unknown")}</div>` : ""}
-              <button class="voice-note" data-audio="${esc(m.audioUrl)}" data-id="${m.id}">
-                <span class="voice-note__play">${icon("play")}</span>
-                <span class="voice-note__label">Voice Note</span>
-                <span class="voice-note__bar"><span class="voice-note__progress"></span></span>
-                <span class="voice-note__duration">${formatDuration(m.duration)}</span>
-              </button>
-            </div>
-          </div>`;
-        })
-        .join("");
+                : "";
+
+              const reactionsHtml = renderReactionPillsHtml(m.reactions, me?.id, m.id);
+              const pickerHtml = renderEmojiPickerHtml(m.id);
+
+              const contentHtml = m.type === "text"
+                ? `<div class="text-msg-bubble ${mine ? "mine" : ""}">${esc(m.text || "")}</div>`
+                : `<button class="voice-note" data-audio="${esc(m.audioUrl)}" data-id="${m.id}">
+                    <span class="voice-note__play">${icon("play")}</span>
+                    <span class="voice-note__label">Voice Note</span>
+                    <span class="voice-note__bar"><span class="voice-note__progress"></span></span>
+                    <span class="voice-note__duration">${formatDuration(m.duration || 0)}</span>
+                  </button>`;
+
+              return `
+              <div class="thread-msg ${mine ? "mine" : ""}">
+                ${avatarHtml}
+                <div class="thread-msg__bubble msg-wrapper ${mine ? "mine" : ""}">
+                  ${!mine ? `<div class="thread-msg__name">${esc(sender?.name || m.senderName || "Unknown")}</div>` : ""}
+                  ${pickerHtml}
+                  ${contentHtml}
+                  ${reactionsHtml}
+                </div>
+              </div>`;
+            })
+            .join("");
+
+      const inputFormHtml = `
+        <form id="text-msg-form" class="chat-input-bar">
+          <input type="text" id="text-msg-input" class="chat-input-field" placeholder="Type a message…" autocomplete="off" required>
+          <button type="submit" class="chat-send-btn" aria-label="Send message">${icon("send")}</button>
+        </form>
+      `;
+
+      container.innerHTML = msgsHtml + inputFormHtml;
+
       $$(".voice-note", container).forEach((btn) => btn.addEventListener("click", () => handleVoiceNoteClick(btn)));
+      wireReactionsUI(container, me?.id, "voiceMessages");
+
+      const textForm = $("#text-msg-form", container);
+      if (textForm) {
+        textForm.addEventListener("submit", async (e) => {
+          e.preventDefault();
+          const input = $("#text-msg-input", textForm);
+          const text = input.value.trim();
+          if (!text) return;
+          input.value = "";
+          try {
+            await addDoc(collection(db, "voiceMessages"), {
+              type: "text",
+              text,
+              senderId: me.id,
+              senderName: me.name,
+              eventId: eventId || null,
+              workId: workId || null,
+              reactions: {},
+              createdAt: serverTimestamp(),
+            });
+            notifyNewMessage({
+              senderName: me.name,
+              text,
+              isVoice: false,
+              routeUrl: location.hash,
+            });
+          } catch (err) {
+            console.error("Failed to send text message:", err);
+            showToast("Couldn't send message.", "error");
+          }
+        });
+      }
     };
 
     return listenToWorkVoiceMessages(eventId, workId, (messages) => {
@@ -1309,7 +1383,7 @@ async function renderEventThread(eventId, workId, memberMap) {
     });
   } catch (e) {
     console.error(e);
-    setError(container, "Couldn't load voice notes.", () => renderEventThread(eventId, workId, memberMap));
+    setError(container, "Couldn't load thread.", () => renderEventThread(eventId, workId, memberMap));
   }
 }
 
@@ -1348,6 +1422,14 @@ async function renderSettingsPage() {
     </div>
 
     <div class="settings-section">
+      <h2 class="section-title mt-8">Notifications</h2>
+      <div class="settings-row">
+        <span class="settings-row__label">Push Notifications</span>
+        <button class="btn btn--ghost btn--sm" id="enable-notifications-btn">${icon("bell", "icon--sm")} ${getNotificationPermissionState() === "granted" ? "Enabled" : "Enable"}</button>
+      </div>
+    </div>
+
+    <div class="settings-section">
       <h2 class="section-title mt-8">Appearance</h2>
       <div class="theme-toggle mt-8">
         <button class="theme-option ${theme === "light" ? "active" : ""}" data-theme="light">${icon("sun", "icon--sm")}Light Mode</button>
@@ -1357,6 +1439,14 @@ async function renderSettingsPage() {
 
     <button class="btn btn--danger btn--full" id="logout-btn">${icon("logout", "icon--sm")}Log Out</button>
   `;
+
+  $("#enable-notifications-btn").addEventListener("click", async () => {
+    const ok = await setupNotifications(member.id);
+    if (ok) showToast("Notifications enabled!");
+    else showToast("Notification permission not granted.", "error");
+    renderSettingsPage();
+  });
+
 
   $("#change-photo-btn").addEventListener("click", () => $("#photo-input").click());
   $("#photo-input").addEventListener("change", (e) => {
@@ -1583,6 +1673,8 @@ function showVoicePreview(result) {
     el.voicePreviewSend.disabled = true;
     try {
       const member = getCurrentMember();
+      const expirationType = $("#voice-preview-expiration")?.value || "never";
+
       if (editingVoiceNoteId) {
         await updateVoiceNote(editingVoiceNoteId, {
           blob: result.blob,
@@ -1601,6 +1693,12 @@ function showVoicePreview(result) {
           senderName: member.name,
           eventId: currentEventContext?.eventId || null,
           workId: currentEventContext?.workId || null,
+          expirationType,
+        });
+        notifyNewMessage({
+          senderName: member.name,
+          isVoice: true,
+          routeUrl: location.hash,
         });
         showToast("Voice note sent");
       }

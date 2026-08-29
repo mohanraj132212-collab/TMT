@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/navigation_home"
+        android:icon="@drawable/ic_home"
+        android:title="@string/nav_home" />
+    <item
+        android:id="@+id/navigation_voice"
+        android:icon="@drawable/ic_mic"
+        android:title="@string/nav_voice" />
+    <item
+        android:id="@+id/navigation_events"
+        android:icon="@drawable/ic_event"
+        android:title="@string/nav_events" />
+    <item
+        android:id="@+id/navigation_reminders"
+        android:icon="@drawable/ic_reminder"
+        android:title="@string/nav_reminders" />
+    <item
+        android:id="@+id/navigation_documents"
+        android:icon="@drawable/ic_document"
+        android:title="@string/nav_documents" />
+</menu>

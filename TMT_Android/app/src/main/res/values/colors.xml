@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Brand Pink Theme Colors -->
+    <color name="pink_primary">#FF4F9A</color>
+    <color name="pink_dark">#E23F86</color>
+    <color name="pink_light">#FFE3EF</color>
+    <color name="pink_tint">#FFF1F7</color>
+
+    <!-- Light Surface Colors -->
+    <color name="bg_light">#FFFFFF</color>
+    <color name="bg_soft_light">#FAF8FA</color>
+    <color name="surface_light">#FFFFFF</color>
+    <color name="surface_raised_light">#FFFFFF</color>
+    <color name="border_light">#ECE7EB</color>
+    <color name="text_main_light">#1B1720</color>
+    <color name="text_muted_light">#756E7A</color>
+    <color name="text_faint_light">#A79FAD</color>
+
+    <!-- Dark Surface Colors -->
+    <color name="bg_dark">#131019</color>
+    <color name="bg_soft_dark">#17141F</color>
+    <color name="surface_dark">#1D1926</color>
+    <color name="surface_raised_dark">#241F2E</color>
+    <color name="border_dark">#322C3B</color>
+    <color name="text_main_dark">#F3F0F6</color>
+    <color name="text_muted_dark">#A79FB0</color>
+    <color name="text_faint_dark">#746C80</color>
+
+    <!-- Status Colors -->
+    <color name="status_ok">#22B07D</color>
+    <color name="status_warn">#E8A93B</color>
+    <color name="status_danger">#E8455A</color>
+    <color name="black_overlay">#66000000</color>
+    <color name="transparent">#00000000</color>
+</resources>

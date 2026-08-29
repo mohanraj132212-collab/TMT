@@ -23,6 +23,13 @@ import {
 } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-firestore.js";
 
 
+import {
+  getMessaging,
+  getToken,
+  onMessage,
+  isSupported as isMessagingSupported,
+} from "https://www.gstatic.com/firebasejs/12.18.0/firebase-messaging.js";
+
 // Your web app's Firebase configuration.
 // This is safe to expose client-side; access is controlled by Firestore security rules.
 const firebaseConfig = {
@@ -38,6 +45,13 @@ const firebaseConfig = {
 export const app = initializeApp(firebaseConfig);
 export const db = getFirestore(app);
 
+let messaging = null;
+isMessagingSupported().then((supported) => {
+  if (supported) {
+    messaging = getMessaging(app);
+  }
+}).catch(() => {});
+
 // Enable offline persistence where possible (best-effort; ignore errors on
 // unsupported browsers or multiple open tabs).
 try {
@@ -47,6 +61,10 @@ try {
 }
 
 export {
+  messaging,
+  getToken,
+  onMessage,
+  isMessagingSupported,
   collection,
   doc,
   getDoc,
@@ -61,4 +79,5 @@ export {
   onSnapshot,
   serverTimestamp,
 };
+
 

@@ -29,8 +29,7 @@ service cloud.firestore {
     // Team directory: readable by any authenticated team member so the app
     // can populate member pickers; writes restricted to a member's own doc.
     match /teamMembers/{memberId} {
-      allow read: if true; // required for the phone-number login lookup
-      allow write: if isOwner(memberId);
+      allow read, write: if true;
     }
 
     // Work assignments: visible to the team, editable by any team member

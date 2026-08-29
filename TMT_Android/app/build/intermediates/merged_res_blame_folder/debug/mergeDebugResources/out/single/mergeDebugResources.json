@@ -1,0 +1,202 @@
+[
+    {
+        "merged": "com.tmt.teammanagement.app-debug-5:/mipmap-xhdpi_ic_launcher.png.flat",
+        "source": "com.tmt.teammanagement.app-main-7:/mipmap-xhdpi/ic_launcher.png"
+    },
+    {
+        "merged": "com.tmt.teammanagement.app-debug-5:/layout_activity_login.xml.flat",
+        "source": "com.tmt.teammanagement.app-main-7:/layout/activity_login.xml"
+    },
+    {
+        "merged": "com.tmt.teammanagement.app-debug-5:/drawable_ic_document.xml.flat",
+        "source": "com.tmt.teammanagement.app-main-7:/drawable/ic_document.xml"
+    },
+    {
+        "merged": "com.tmt.teammanagement.app-debug-5:/layout_fragment_reminders.xml.flat",
+        "source": "com.tmt.teammanagement.app-main-7:/layout/fragment_reminders.xml"
+    },
+    {
+        "merged": "com.tmt.teammanagement.app-debug-5:/drawable_ic_reminder.xml.flat",
+        "source": "com.tmt.teammanagement.app-main-7:/drawable/ic_reminder.xml"
+    },
+    {
+        "merged": "com.tmt.teammanagement.app-debug-5:/mipmap-anydpi-v26_ic_launcher.xml.flat",
+        "source": "com.tmt.teammanagement.app-main-7:/mipmap-anydpi-v26/ic_launcher.xml"
+    },
+    {
+        "merged": "com.tmt.teammanagement.app-debug-5:/mipmap-xhdpi_ic_launcher_round.png.flat",
+        "source": "com.tmt.teammanagement.app-main-7:/mipmap-xhdpi/ic_launcher_round.png"
+    },
+    {
+        "merged": "com.tmt.teammanagement.app-debug-5:/drawable_ic_play.xml.flat",
+        "source": "com.tmt.teammanagement.app-main-7:/drawable/ic_play.xml"
+    },
+    {
+        "merged": "com.tmt.teammanagement.app-debug-5:/layout_fragment_home.xml.flat",
+        "source": "com.tmt.teammanagement.app-main-7:/layout/fragment_home.xml"
+    },
+    {
+        "merged": "com.tmt.teammanagement.app-debug-5:/drawable_ic_pause.xml.flat",
+        "source": "com.tmt.teammanagement.app-main-7:/drawable/ic_pause.xml"
+    },
+    {
+        "merged": "com.tmt.teammanagement.app-debug-5:/layout_activity_main.xml.flat",
+        "source": "com.tmt.teammanagement.app-main-7:/layout/activity_main.xml"
+    },
+    {
+        "merged": "com.tmt.teammanagement.app-debug-5:/mipmap-hdpi_ic_launcher_foreground.png.flat",
+        "source": "com.tmt.teammanagement.app-main-7:/mipmap-hdpi/ic_launcher_foreground.png"
+    },
+    {
+        "merged": "com.tmt.teammanagement.app-debug-5:/mipmap-hdpi_ic_launcher.png.flat",
+        "source": "com.tmt.teammanagement.app-main-7:/mipmap-hdpi/ic_launcher.png"
+    },
+    {
+        "merged": "com.tmt.teammanagement.app-debug-5:/drawable_ic_edit.xml.flat",
+        "source": "com.tmt.teammanagement.app-main-7:/drawable/ic_edit.xml"
+    },
+    {
+        "merged": "com.tmt.teammanagement.app-debug-5:/mipmap-xxhdpi_ic_launcher_round.png.flat",
+        "source": "com.tmt.teammanagement.app-main-7:/mipmap-xxhdpi/ic_launcher_round.png"
+    },
+    {
+        "merged": "com.tmt.teammanagement.app-debug-5:/layout_item_reminder.xml.flat",
+        "source": "com.tmt.teammanagement.app-main-7:/layout/item_reminder.xml"
+    },
+    {
+        "merged": "com.tmt.teammanagement.app-debug-5:/layout_dialog_reminder_form.xml.flat",
+        "source": "com.tmt.teammanagement.app-main-7:/layout/dialog_reminder_form.xml"
+    },
+    {
+        "merged": "com.tmt.teammanagement.app-debug-5:/mipmap-xxxhdpi_ic_launcher.png.flat",
+        "source": "com.tmt.teammanagement.app-main-7:/mipmap-xxxhdpi/ic_launcher.png"
+    },
+    {
+        "merged": "com.tmt.teammanagement.app-debug-5:/drawable_ic_home.xml.flat",
+        "source": "com.tmt.teammanagement.app-main-7:/drawable/ic_home.xml"
+    },
+    {
+        "merged": "com.tmt.teammanagement.app-debug-5:/layout_item_event.xml.flat",
+        "source": "com.tmt.teammanagement.app-main-7:/layout/item_event.xml"
+    },
+    {
+        "merged": "com.tmt.teammanagement.app-debug-5:/mipmap-hdpi_ic_launcher_round.png.flat",
+        "source": "com.tmt.teammanagement.app-main-7:/mipmap-hdpi/ic_launcher_round.png"
+    },
+    {
+        "merged": "com.tmt.teammanagement.app-debug-5:/layout_item_voice_message.xml.flat",
+        "source": "com.tmt.teammanagement.app-main-7:/layout/item_voice_message.xml"
+    },
+    {
+        "merged": "com.tmt.teammanagement.app-debug-5:/menu_bottom_nav_menu.xml.flat",
+        "source": "com.tmt.teammanagement.app-main-7:/menu/bottom_nav_menu.xml"
+    },
+    {
+        "merged": "com.tmt.teammanagement.app-debug-5:/mipmap-anydpi-v26_ic_launcher_round.xml.flat",
+        "source": "com.tmt.teammanagement.app-main-7:/mipmap-anydpi-v26/ic_launcher_round.xml"
+    },
+    {
+        "merged": "com.tmt.teammanagement.app-debug-5:/layout_dialog_cropper.xml.flat",
+        "source": "com.tmt.teammanagement.app-main-7:/layout/dialog_cropper.xml"
+    },
+    {
+        "merged": "com.tmt.teammanagement.app-debug-5:/xml_backup_rules.xml.flat",
+        "source": "com.tmt.teammanagement.app-main-7:/xml/backup_rules.xml"
+    },
+    {
+        "merged": "com.tmt.teammanagement.app-debug-5:/mipmap-mdpi_ic_launcher.png.flat",
+        "source": "com.tmt.teammanagement.app-main-7:/mipmap-mdpi/ic_launcher.png"
+    },
+    {
+        "merged": "com.tmt.teammanagement.app-debug-5:/layout_fragment_documents.xml.flat",
+        "source": "com.tmt.teammanagement.app-main-7:/layout/fragment_documents.xml"
+    },
+    {
+        "merged": "com.tmt.teammanagement.app-debug-5:/mipmap-xxxhdpi_ic_launcher_foreground.png.flat",
+        "source": "com.tmt.teammanagement.app-main-7:/mipmap-xxxhdpi/ic_launcher_foreground.png"
+    },
+    {
+        "merged": "com.tmt.teammanagement.app-debug-5:/mipmap-xxhdpi_ic_launcher.png.flat",
+        "source": "com.tmt.teammanagement.app-main-7:/mipmap-xxhdpi/ic_launcher.png"
+    },
+    {
+        "merged": "com.tmt.teammanagement.app-debug-5:/drawable_ic_profile.xml.flat",
+        "source": "com.tmt.teammanagement.app-main-7:/drawable/ic_profile.xml"
+    },
+    {
+        "merged": "com.tmt.teammanagement.app-debug-5:/mipmap-mdpi_ic_launcher_round.png.flat",
+        "source": "com.tmt.teammanagement.app-main-7:/mipmap-mdpi/ic_launcher_round.png"
+    },
+    {
+        "merged": "com.tmt.teammanagement.app-debug-5:/drawable_ic_event.xml.flat",
+        "source": "com.tmt.teammanagement.app-main-7:/drawable/ic_event.xml"
+    },
+    {
+        "merged": "com.tmt.teammanagement.app-debug-5:/mipmap-xxhdpi_ic_launcher_foreground.png.flat",
+        "source": "com.tmt.teammanagement.app-main-7:/mipmap-xxhdpi/ic_launcher_foreground.png"
+    },
+    {
+        "merged": "com.tmt.teammanagement.app-debug-5:/layout_fragment_profile.xml.flat",
+        "source": "com.tmt.teammanagement.app-main-7:/layout/fragment_profile.xml"
+    },
+    {
+        "merged": "com.tmt.teammanagement.app-debug-5:/drawable_ic_add.xml.flat",
+        "source": "com.tmt.teammanagement.app-main-7:/drawable/ic_add.xml"
+    },
+    {
+        "merged": "com.tmt.teammanagement.app-debug-5:/drawable_ic_delete.xml.flat",
+        "source": "com.tmt.teammanagement.app-main-7:/drawable/ic_delete.xml"
+    },
+    {
+        "merged": "com.tmt.teammanagement.app-debug-5:/xml_file_paths.xml.flat",
+        "source": "com.tmt.teammanagement.app-main-7:/xml/file_paths.xml"
+    },
+    {
+        "merged": "com.tmt.teammanagement.app-debug-5:/layout_item_work.xml.flat",
+        "source": "com.tmt.teammanagement.app-main-7:/layout/item_work.xml"
+    },
+    {
+        "merged": "com.tmt.teammanagement.app-debug-5:/layout_fragment_events.xml.flat",
+        "source": "com.tmt.teammanagement.app-main-7:/layout/fragment_events.xml"
+    },
+    {
+        "merged": "com.tmt.teammanagement.app-debug-5:/layout_fragment_voice.xml.flat",
+        "source": "com.tmt.teammanagement.app-main-7:/layout/fragment_voice.xml"
+    },
+    {
+        "merged": "com.tmt.teammanagement.app-debug-5:/drawable_ic_mic.xml.flat",
+        "source": "com.tmt.teammanagement.app-main-7:/drawable/ic_mic.xml"
+    },
+    {
+        "merged": "com.tmt.teammanagement.app-debug-5:/layout_dialog_event_form.xml.flat",
+        "source": "com.tmt.teammanagement.app-main-7:/layout/dialog_event_form.xml"
+    },
+    {
+        "merged": "com.tmt.teammanagement.app-debug-5:/xml_data_extraction_rules.xml.flat",
+        "source": "com.tmt.teammanagement.app-main-7:/xml/data_extraction_rules.xml"
+    },
+    {
+        "merged": "com.tmt.teammanagement.app-debug-5:/layout_activity_event_detail.xml.flat",
+        "source": "com.tmt.teammanagement.app-main-7:/layout/activity_event_detail.xml"
+    },
+    {
+        "merged": "com.tmt.teammanagement.app-debug-5:/mipmap-xxxhdpi_ic_launcher_round.png.flat",
+        "source": "com.tmt.teammanagement.app-main-7:/mipmap-xxxhdpi/ic_launcher_round.png"
+    },
+    {
+        "merged": "com.tmt.teammanagement.app-debug-5:/mipmap-mdpi_ic_launcher_foreground.png.flat",
+        "source": "com.tmt.teammanagement.app-main-7:/mipmap-mdpi/ic_launcher_foreground.png"
+    },
+    {
+        "merged": "com.tmt.teammanagement.app-debug-5:/drawable_ic_check.xml.flat",
+        "source": "com.tmt.teammanagement.app-main-7:/drawable/ic_check.xml"
+    },
+    {
+        "merged": "com.tmt.teammanagement.app-debug-5:/mipmap-xhdpi_ic_launcher_foreground.png.flat",
+        "source": "com.tmt.teammanagement.app-main-7:/mipmap-xhdpi/ic_launcher_foreground.png"
+    },
+    {
+        "merged": "com.tmt.teammanagement.app-debug-5:/layout_item_document.xml.flat",
+        "source": "com.tmt.teammanagement.app-main-7:/layout/item_document.xml"
+    }
+]

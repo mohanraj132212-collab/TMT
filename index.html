@@ -84,6 +84,18 @@
   <div class="voice-preview__wave">
     <span class="voice-preview__timer" id="voice-preview-timer">0:00</span>
   </div>
+  <div class="voice-preview__expiration-wrap">
+    <label for="voice-preview-expiration" class="voice-preview__exp-label">Expires:</label>
+    <select id="voice-preview-expiration" class="voice-preview__exp-select" aria-label="Voice note expiration time">
+      <option value="never" selected>Never</option>
+      <option value="1h">1 Hour</option>
+      <option value="6h">6 Hours</option>
+      <option value="12h">12 Hours</option>
+      <option value="24h">24 Hours</option>
+      <option value="3d">3 Days</option>
+      <option value="7d">7 Days</option>
+    </select>
+  </div>
   <button class="icon-btn icon-btn--send" id="voice-preview-send" aria-label="Send recording"></button>
 </div>
 
