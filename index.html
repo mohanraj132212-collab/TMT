@@ -118,10 +118,17 @@
 <script>
   if ("serviceWorker" in navigator) {
     window.addEventListener("load", () => {
-      navigator.serviceWorker.register("service-worker.js").catch((err) => {
-        console.warn("Service worker registration failed:", err);
-      });
+      navigator.serviceWorker
+        .register("./service-worker.js", { scope: "./" })
+        .then((reg) => {
+          console.log("[FCM] Service worker registered with scope:", reg.scope);
+        })
+        .catch((err) => {
+          console.error("[FCM] Service worker registration failed:", err);
+        });
     });
+  } else {
+    console.warn("[FCM] Service Worker is not supported in this browser.");
   }
 </script>
 </body>

@@ -60,29 +60,41 @@ export const VAPID_PUBLIC_KEY = "BNRLqOJOnSj-0XNTFQppNcjKBjj4o-IAUwGhUPqwzFuBikF
 
 /** Register FCM token for the current device and add to user's fcmTokens array in Firestore. */
 export async function registerFCMToken(memberId) {
-  if (!memberId || !isPushSupported()) return null;
+  if (!memberId || !isPushSupported()) {
+    console.warn("[FCM] Browser push is not supported or memberId is missing.");
+    return null;
+  }
 
   try {
     const swReg = await navigator.serviceWorker.ready;
+    console.log("[FCM] Service worker registered with scope:", swReg?.scope);
+
     const supported = await isMessagingSupported();
+    console.log("[FCM] Browser support:", supported);
 
     if (supported && messaging) {
+      console.log("[FCM] Generating FCM token with VAPID key...");
       const token = await getToken(messaging, {
         vapidKey: VAPID_PUBLIC_KEY,
         serviceWorkerRegistration: swReg,
       });
+
       if (token) {
+        console.log("[FCM] FCM token generated:", token.slice(0, 15) + "...");
         await updateDoc(doc(db, "teamMembers", memberId), {
           fcmTokens: arrayUnion(token),
           notificationEnabled: true,
           updatedAt: new Date(),
         });
         localStorage.setItem("tmt_fcm_token", token);
+        console.log("[FCM] Token saved to Firestore for memberId:", memberId);
         return token;
+      } else {
+        console.warn("[FCM] No FCM token returned from getToken.");
       }
     }
   } catch (err) {
-    console.warn("FCM registration token error:", err);
+    console.error("[FCM] FCM registration token error:", err);
   }
   return null;
 }
@@ -99,21 +111,26 @@ export async function unregisterFCMToken(memberId) {
       notificationEnabled: false,
       updatedAt: new Date(),
     });
+    console.log("[FCM] Token removed from Firestore for memberId:", memberId);
   } catch (err) {
-    console.warn("FCM unregister token error:", err);
+    console.warn("[FCM] FCM unregister token error:", err);
   }
 }
 
 /** Main notification setup on login/boot. Requests permission once if default. */
 export async function setupNotifications(memberId) {
-  if (!isPushSupported() || !memberId) return false;
+  const pushSupported = isPushSupported();
+  console.log("[FCM] Browser support:", pushSupported);
+  if (!pushSupported || !memberId) return false;
 
   const currentPerm = getNotificationPermissionState();
+  console.log("[FCM] Notification permission:", currentPerm);
 
   // If permission not yet requested, ask permission ONCE on initial setup
   if (currentPerm === "default") {
     try {
       const perm = await Notification.requestPermission();
+      console.log("[FCM] User notification permission choice:", perm);
       if (perm === "granted") {
         await setUserNotificationPreference(memberId, true);
         await registerFCMToken(memberId);
@@ -121,7 +138,7 @@ export async function setupNotifications(memberId) {
         await setUserNotificationPreference(memberId, false);
       }
     } catch (e) {
-      console.warn("Notification permission request error:", e);
+      console.warn("[FCM] Notification permission request error:", e);
     }
   } else if (currentPerm === "granted") {
     const isEnabled = await getUserNotificationPreference(memberId);
@@ -137,6 +154,7 @@ export async function setupNotifications(memberId) {
     const supported = await isMessagingSupported();
     if (supported && messaging) {
       onMessage(messaging, (payload) => {
+        console.log("[FCM] Foreground message received:", payload);
         const { title, body, icon, url } = payload.notification || payload.data || {};
         if (title) {
           showNotificationPopup(title, body, icon || "assets/images/logo.png", url);
@@ -144,7 +162,7 @@ export async function setupNotifications(memberId) {
       });
     }
   } catch (e) {
-    /* no-op */
+    console.warn("[FCM] Messaging initialization error:", e);
   }
 
   return true;
